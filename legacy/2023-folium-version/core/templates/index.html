@@ -1,0 +1,26 @@
+                        <!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Resident Information System</title>
+    <h1 align="center">Resident Information System</h1>
+    <style> 
+    body{
+		background-color: #91bbe9;
+	}
+    </style>
+</head>
+<body>
+    <form method="GET" action="{% url 'index' %}">
+        <label for="suburb_filter">Suburb:</label>
+        <input type="text" name="suburb_filter" value="{{ suburb_filter }}">
+        <!-- Add more filter inputs if needed -->
+        <input type="submit" value="Filter">
+    </form>
+
+    <div id="map">{{ map|safe }}</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+</body>
+</html>
