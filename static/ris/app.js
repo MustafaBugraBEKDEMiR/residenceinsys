@@ -41,8 +41,8 @@
   const renderer = L.canvas({ padding: 0.5 });
 
   const basemaps = {
-    "Light (CARTO)": L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-      maxZoom: 20, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    "Light gray (Esri)": L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
+      maxZoom: 19, maxNativeZoom: 16, attribution: "Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors",
     }),
     OpenStreetMap: L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -51,7 +51,7 @@
       maxZoom: 19, attribution: "Tiles &copy; Esri, Maxar, Earthstar Geographics",
     }),
   };
-  basemaps["Light (CARTO)"].addTo(map);
+  basemaps["Light gray (Esri)"].addTo(map);
   const buildingLayer = L.layerGroup().addTo(map);
   const drawnItems = new L.FeatureGroup().addTo(map);
   L.control.layers(basemaps, { Buildings: buildingLayer, "Affected area": drawnItems }, { collapsed: true }).addTo(map);
