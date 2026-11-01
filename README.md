@@ -18,7 +18,7 @@ of older residential buildings and a CSV export for field teams.
 
 <sub>A polygon over the Melbourne CBD: 3,044 buildings, 51,973 dwellings,
 ≈ 75,000 estimated residents, and the pre-1980 residential buildings with the
-most people listed first. (Screenshot taken without the basemap tiles.)</sub>
+most people listed first. Screenshot taken without basemap tiles; the [live demo](https://mustafabugrabekdemir.github.io/residenceinsys/) shows the map.</sub>
 
 ---
 
