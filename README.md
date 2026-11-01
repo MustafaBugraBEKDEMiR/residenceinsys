@@ -9,7 +9,10 @@ buildings, dwellings and estimated residents inside it, broken down by a
 construction-year-based vulnerability class, together with a priority list
 of older residential buildings and a CSV export for field teams.
 
+**▶ Live demo: https://mustafabugrabekdemir.github.io/residenceinsys/**
+
 ![tests](https://github.com/MustafaBugraBEKDEMiR/residenceinsys/actions/workflows/tests.yml/badge.svg)
+![pages](https://github.com/MustafaBugraBEKDEMiR/residenceinsys/actions/workflows/pages.yml/badge.svg)
 
 ![RIS screenshot: a polygon drawn over Melbourne CBD with the area summary](docs/screenshot.png)
 
@@ -83,6 +86,7 @@ Looking back at the 2023 version, a few things limited it:
 | Backend | Django + Folium (server-rendered map) | Django + **GeoDjango / PostGIS** + REST API (GeoJSON) |
 | Frontend | Folium HTML | **Leaflet** client with Leaflet.draw, canvas rendering, legend, mobile layout |
 | Operations | manual setup | **Docker Compose**, `.env` settings, automated tests + GitHub Actions |
+| Access | local only | **live demo on GitHub Pages** (same client, analysis runs in the browser) |
 
 ---
 
@@ -201,6 +205,20 @@ python manage.py load_buildings
 python manage.py runserver
 ```
 
+### Static demo (GitHub Pages)
+
+The live demo uses the same Leaflet client. `static/ris/static-backend.js`
+answers the API calls in the browser: same filters, the same area statistics
+and the same CSV export, computed from a JSON file. Polygon results are
+identical to the PostGIS API, and circles use the same great-circle distance.
+
+```bash
+python scripts/build_site.py          # writes _site/ (no database needed)
+python -m http.server -d _site 8001
+```
+
+`.github/workflows/pages.yml` rebuilds and deploys it on every push to `main`.
+
 ### Tests
 
 ```bash
@@ -218,6 +236,7 @@ vulnerability classes and every API endpoint.
 buildings/            Django app: model, CLUE processing, risk classes, API, tests
 config/               Django settings and URLs
 templates/, static/   Leaflet client (Leaflet + Leaflet.draw vendored for offline use)
+scripts/build_site.py static GitHub Pages build
 data/                 processed dataset + how to rebuild it
 docker/, Dockerfile   container setup
 legacy/               the original 2023 Folium version

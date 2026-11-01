@@ -4,6 +4,7 @@ import math
 
 from django.conf import settings
 from django.contrib.gis.geos import GEOSException, GEOSGeometry, Point
+from django.contrib.gis.measure import D
 from django.db.models import Avg, Count, Max, Min, Q, Sum
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -86,10 +87,9 @@ def parse_area(geometry):
             raise ValidationError({"geometry": "Circle needs center [lon, lat] and radius (m)"})
         if not 0 < radius <= MAX_CIRCLE_RADIUS_M:
             raise ValidationError({"geometry": f"radius must be in (0, {MAX_CIRCLE_RADIUS_M}] m"})
-        # buffer in metres in GDA2020 / MGA zone 55, then back to WGS84
-        circle = Point(lon, lat, srid=4326).transform(7855, clone=True).buffer(radius, quadsegs=32)
-        circle.transform(4326)
-        return {"location__within": circle}, math.pi * radius ** 2
+        # great-circle distance on the sphere (PostGIS ST_DistanceSphere)
+        center = Point(lon, lat, srid=4326)
+        return {"location__distance_lte": (center, D(m=radius))}, math.pi * radius ** 2
     if geometry.get("type") not in {"Polygon", "MultiPolygon"}:
         raise ValidationError({"geometry": "Only Polygon, MultiPolygon or Circle are supported"})
     try:
@@ -218,7 +218,7 @@ class AreaStatsView(APIView):
             a["est_residents"] = round(a["est_residents"] or 0)
         priority = list(
             qs.filter(dwellings__gt=0, risk_class__in=[risk.HIGH, risk.ELEVATED])
-            .order_by("-est_residents")
+            .order_by("-est_residents", "id")
             .values("id", "street_address", "building_name", "construction_year",
                     "floors_above_ground", "dwellings", "est_residents", "risk_class")[:10]
         )
@@ -255,7 +255,7 @@ class ExportView(APIView):
         resp["Content-Disposition"] = 'attachment; filename="ris_selection.csv"'
         w = csv.writer(resp)
         w.writerow(EXPORT_FIELDS)
-        for b in qs.order_by("-est_residents"):
+        for b in qs.order_by("-est_residents", "id"):
             w.writerow([
                 b.property_id, b.building_name, b.street_address, b.small_area,
                 b.construction_year or "", b.refurbished_year or "", b.floors_above_ground or "",

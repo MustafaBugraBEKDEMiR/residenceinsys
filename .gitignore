@@ -10,3 +10,4 @@ data/raw/
 .DS_Store
 Thumbs.db
 desktop.ini
+_site/

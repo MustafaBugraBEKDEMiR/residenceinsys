@@ -53,3 +53,4 @@ button.primary { background: var(--accent); color: var(--accent-ink); border-col
   .sidebar.open { transform: none; }
   .toggle { display: block; position: absolute; z-index: 1001; top: 10px; left: 56px; }
 }
+.demo-note { margin: 0 0 6px; font-size: .78rem; color: #92400e; background: #fef3c7; border-radius: var(--radius); padding: 5px 8px; }

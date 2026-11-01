@@ -8,6 +8,27 @@
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
   })[c]);
 
+  // Data access: the Django REST API by default. The static GitHub Pages build
+  // sets window.RIS_BACKEND (static/ris/static-backend.js) to run in-browser.
+  const postJSON = (url, body) => fetch(url, {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+  });
+  const backend = window.RIS_BACKEND || {
+    async meta() { return (await fetch("/api/meta/")).json(); },
+    async buildings(params) {
+      const res = await fetch(`/api/buildings/?${new URLSearchParams(params)}`);
+      if (!res.ok) throw new Error("Could not load buildings.");
+      return res.json();
+    },
+    async areaStats(body) {
+      const res = await postJSON("/api/area-stats/", body);
+      const data = await res.json();
+      if (!res.ok) throw new Error(JSON.stringify(data));
+      return data;
+    },
+    async exportCsv(body) { return (await postJSON("/api/export/", body)).blob(); },
+  };
+
   let META = null;
   let COLORS = {};
   let LABELS = {};
@@ -88,11 +109,10 @@
 
   // ---- data loading ------------------------------------------------------
   async function loadBuildings(fit = false) {
-    const qs = new URLSearchParams(filterParams()).toString();
     $("#result-count").textContent = "Loading…";
-    const res = await fetch(`/api/buildings/?${qs}`);
-    if (!res.ok) { $("#result-count").textContent = "Could not load buildings."; return; }
-    const fc = await res.json();
+    let fc;
+    try { fc = await backend.buildings(filterParams()); }
+    catch (err) { $("#result-count").textContent = err.message; return; }
     buildingLayer.clearLayers();
     markersById.clear();
     const bounds = [];
@@ -112,14 +132,10 @@
     if (currentArea) analyseArea();
   }
 
-  async function postJSON(url, body) {
-    return fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-  }
-
   async function analyseArea() {
-    const res = await postJSON("/api/area-stats/", { geometry: currentArea, filters: filterParams() });
-    const data = await res.json();
-    if (!res.ok) { alertBox(JSON.stringify(data)); return; }
+    let data;
+    try { data = await backend.areaStats({ geometry: currentArea, filters: filterParams() }); }
+    catch (err) { alertBox(err.message); return; }
     $("#stats").hidden = false;
     $("#k-buildings").textContent = fmt(data.buildings);
     $("#k-res").textContent = fmt(data.residential_buildings);
@@ -188,8 +204,7 @@
     if (m) { map.setView(m.getLatLng(), 18); m.openPopup(); closePanelOnMobile(); }
   });
   $("#export").addEventListener("click", async () => {
-    const res = await postJSON("/api/export/", { geometry: currentArea, filters: filterParams() });
-    const blob = await res.blob();
+    const blob = await backend.exportCsv({ geometry: currentArea, filters: filterParams() });
     const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: "ris_selection.csv" });
     document.body.appendChild(a); a.click(); a.remove();
   });
@@ -224,7 +239,8 @@
 
   // ---- init --------------------------------------------------------------
   async function init() {
-    META = await (await fetch("/api/meta/")).json();
+    META = await backend.meta();
+    if (window.RIS_BACKEND) document.querySelectorAll(".server-only").forEach((el) => el.remove());
     META.risk_classes.forEach((r) => { COLORS[r.key] = r.color; LABELS[r.key] = r.label; });
     $("#hh").textContent = META.persons_per_dwelling;
     $("#dataset-summary").textContent = META.buildings
