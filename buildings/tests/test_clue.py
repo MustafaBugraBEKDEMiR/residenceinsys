@@ -8,7 +8,7 @@ FIX = Path(__file__).parent / "fixtures"
 def _prepare(year=None):
     b = clue.read_table(FIX / "buildings_sample.csv")
     d = clue.read_table(FIX / "dwellings_sample.csv")
-    return clue.prepare(b, d, household_size=1.8, census_year=year)
+    return clue.prepare(b, d, persons_per_dwelling=1.8, census_year=year)
 
 
 def test_headers_are_normalised_from_labels():

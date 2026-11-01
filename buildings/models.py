@@ -9,7 +9,7 @@ class Building(models.Model):
     Building attributes come from the CLUE "Building information" dataset;
     ``dwellings`` is joined from the CLUE "Residential dwellings" dataset on
     (census_year, property_id). ``est_residents`` is derived as
-    dwellings x average household size (see settings.HOUSEHOLD_SIZE).
+    dwellings x persons per dwelling (see settings.PERSONS_PER_DWELLING).
     """
 
     census_year = models.PositiveSmallIntegerField(db_index=True)

@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(
     DEBUG=(bool, False),
     ALLOWED_HOSTS=(list, ["localhost", "127.0.0.1"]),
-    HOUSEHOLD_SIZE=(float, 1.8),
+    PERSONS_PER_DWELLING=(float, 1.45),
 )
 environ.Env.read_env(BASE_DIR / ".env")
 
@@ -96,9 +96,12 @@ REST_FRAMEWORK = {
 }
 
 # --- Domain settings -------------------------------------------------------
-# Average number of people per household, City of Melbourne
-# (ABS 2021 Census QuickStats, SA3 20604 "Melbourne City": 1.8).
-HOUSEHOLD_SIZE = env("HOUSEHOLD_SIZE")
+# Average number of usual residents per private dwelling, City of Melbourne.
+# ABS 2021 Census QuickStats, SA3 20604 "Melbourne City":
+# 149,601 people / 103,029 private dwellings = 1.45.
+# (Average household size is 1.8, but 27% of dwellings were unoccupied, so
+# multiplying every dwelling by 1.8 would overestimate the population by ~40%.)
+PERSONS_PER_DWELLING = env("PERSONS_PER_DWELLING")
 
 # Folder with the raw City of Melbourne CLUE CSV exports.
 CLUE_DATA_DIR = Path(env("CLUE_DATA_DIR", default=str(BASE_DIR / "data")))

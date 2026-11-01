@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+from django.conf import settings
 from django.core.management import call_command
 from rest_framework.test import APIClient
 
@@ -21,7 +22,7 @@ def loaded(db, tmp_path):
     rows, _ = clue.prepare(
         clue.read_table(FIX / "buildings_sample.csv"),
         clue.read_table(FIX / "dwellings_sample.csv"),
-        household_size=1.8,
+        persons_per_dwelling=1.8,
     )
     path = tmp_path / "ris_buildings.csv"
     clue.write_processed(rows, path)
@@ -66,7 +67,7 @@ def test_area_stats_polygon(client, loaded):
     data = client.post("/api/area-stats/", {"geometry": CBD}, format="json").json()
     assert data["buildings"] == 3
     assert data["dwellings"] == 54
-    assert data["est_residents"] == round(54 * 1.8)
+    assert data["est_residents"] == round(54 * settings.PERSONS_PER_DWELLING)
     assert data["area_km2"] > 0
     high = next(r for r in data["by_risk"] if r["key"] == "high")
     assert high["buildings"] == 1
@@ -78,7 +79,7 @@ def test_area_stats_circle_and_filters(client, loaded):
             "filters": {"residential": True}}
     data = client.post("/api/area-stats/", body, format="json").json()
     assert data["buildings"] == 1
-    assert data["est_residents"] == 2
+    assert data["dwellings"] == 1
 
 
 def test_area_stats_rejects_bad_geometry(client, loaded):

@@ -25,7 +25,7 @@ class Command(BaseCommand):
         if not path.exists():
             raise CommandError(f"Processed file not found: {path}. Run prepare_clue first.")
         rows = clue.read_processed(path)
-        hh = settings.HOUSEHOLD_SIZE
+        hh = settings.PERSONS_PER_DWELLING
         objs = []
         for r in rows:
             lat, lon = r.pop("latitude"), r.pop("longitude")
@@ -35,5 +35,5 @@ class Command(BaseCommand):
             Building.objects.all().delete()
             Building.objects.bulk_create(objs, batch_size=2000)
         self.stdout.write(self.style.SUCCESS(
-            f"Loaded {len(objs)} buildings (household size {hh})."
+            f"Loaded {len(objs)} buildings ({hh} persons per dwelling)."
         ))

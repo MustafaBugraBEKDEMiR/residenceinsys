@@ -148,7 +148,7 @@ def available_years(rows: list[dict]) -> list[int]:
 def prepare(
     building_rows: list[dict],
     dwelling_rows: list[dict],
-    household_size: float,
+    persons_per_dwelling: float,
     census_year: int | None = None,
 ) -> tuple[list[dict], PrepareReport]:
     """Join both tables for one census year and derive resident estimates."""
@@ -215,7 +215,7 @@ def prepare(
             "accessibility": (r.get("accessibility") or "").strip(),
             "dwellings": dwellings,
             "dwelling_type": dw_types[pid].most_common(1)[0][0] if dwellings else "",
-            "est_residents": round(dwellings * household_size, 1),
+            "est_residents": round(dwellings * persons_per_dwelling, 1),
             "risk_class": rclass,
             "latitude": round(coords[0], 6),
             "longitude": round(coords[1], 6),

@@ -36,9 +36,10 @@ from two City of Melbourne open datasets collected through the
   inside the City of Melbourne bounding box are dropped.
 * Construction years of `0`, blank or outside 1800-2100 are treated as unknown.
 * Dwelling counts are summed per `property_id` and joined to the building.
-* `est_residents = dwellings × HOUSEHOLD_SIZE` (default 1.8 people per
-  household, ABS 2021 Census, Melbourne City SA3). The value is configurable
-  through the `HOUSEHOLD_SIZE` environment variable.
+* `est_residents = dwellings × PERSONS_PER_DWELLING` (default 1.45 =
+  149,601 usual residents / 103,029 private dwellings, ABS 2021 Census,
+  Melbourne City SA3). Configurable through the `PERSONS_PER_DWELLING`
+  environment variable.
 * `risk_class` is derived from construction year (see `buildings/risk.py`).
 
 Attribution: *Contains data from the City of Melbourne Open Data Portal,

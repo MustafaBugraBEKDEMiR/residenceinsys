@@ -19,7 +19,7 @@ services:
       SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
       DEBUG: ${DEBUG:-0}
       ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
-      HOUSEHOLD_SIZE: ${HOUSEHOLD_SIZE:-1.8}
+      PERSONS_PER_DWELLING: ${PERSONS_PER_DWELLING:-1.45}
     ports:
       - "8000:8000"
     depends_on:

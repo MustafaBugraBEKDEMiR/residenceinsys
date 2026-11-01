@@ -52,7 +52,7 @@
   }
 
   function radiusFor(props) {
-    return props.dwellings > 0 ? Math.min(4 + Math.sqrt(props.dwellings) * 0.9, 16) : 3.5;
+    return props.dwellings > 0 ? Math.min(3 + Math.sqrt(props.dwellings) * 0.6, 12) : 2.5;
   }
 
   function popupHtml(p) {
@@ -78,7 +78,7 @@
     const sel = selectedIds.has(id);
     return {
       renderer, radius: radiusFor(props), color: sel ? "#111827" : "#ffffff",
-      weight: sel ? 2 : 0.8, fillColor: COLORS[props.risk_class], fillOpacity: sel || !selectedIds.size ? 0.85 : 0.3,
+      weight: sel ? 1.5 : 0.5, fillColor: COLORS[props.risk_class], fillOpacity: sel || !selectedIds.size ? 0.8 : 0.25,
     };
   }
 
@@ -226,7 +226,7 @@
   async function init() {
     META = await (await fetch("/api/meta/")).json();
     META.risk_classes.forEach((r) => { COLORS[r.key] = r.color; LABELS[r.key] = r.label; });
-    $("#hh").textContent = META.household_size;
+    $("#hh").textContent = META.persons_per_dwelling;
     $("#dataset-summary").textContent = META.buildings
       ? `${fmt(META.buildings)} buildings · ${fmt(META.dwellings)} dwellings · ≈ ${fmt(META.est_residents)} residents (CLUE ${META.census_year})`
       : "No data loaded yet – run the import commands (see README).";

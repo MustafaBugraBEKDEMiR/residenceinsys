@@ -31,7 +31,7 @@ class Command(BaseCommand):
         d_rows = clue.read_table(opts["dwellings"])
         self.stdout.write(f"Building census years: {clue.available_years(b_rows)}")
         self.stdout.write(f"Dwelling census years: {clue.available_years(d_rows)}")
-        rows, report = clue.prepare(b_rows, d_rows, settings.HOUSEHOLD_SIZE, opts["year"])
+        rows, report = clue.prepare(b_rows, d_rows, settings.PERSONS_PER_DWELLING, opts["year"])
         clue.write_processed(rows, opts["out"])
         for line in report.lines():
             self.stdout.write(line)

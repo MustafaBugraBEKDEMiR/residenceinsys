@@ -11,7 +11,11 @@ of older residential buildings and a CSV export for field teams.
 
 ![tests](https://github.com/MustafaBugraBEKDEMiR/residenceinsys/actions/workflows/tests.yml/badge.svg)
 
-<!-- SCREENSHOT -->
+![RIS screenshot: a polygon drawn over Melbourne CBD with the area summary](docs/screenshot.png)
+
+<sub>A polygon over the Melbourne CBD: 3,044 buildings, 51,973 dwellings,
+≈ 75,000 estimated residents, and the pre-1980 residential buildings with the
+most people listed first. (Screenshot taken without the basemap tiles.)</sub>
 
 ---
 
@@ -51,7 +55,9 @@ map server-side with **Folium**. Users typed a suburb name and clicked
 building markers to read a popup.
 
 The 2023 code is archived unchanged (apart from removing credentials) in
-[`legacy/2023-folium-version`](legacy/2023-folium-version).
+[`legacy/2023-folium-version`](legacy/2023-folium-version), and a short
+summary of the original report is in
+[`docs/2023-project-summary.md`](docs/2023-project-summary.md).
 
 ### Why it was rebuilt
 
@@ -71,7 +77,7 @@ Looking back at the 2023 version, a few things limited it:
 | | 2023 | 2026 |
 | --- | --- | --- |
 | Data | Kaggle housing sales, renamed bedroom count | City of Melbourne **CLUE** building census + residential dwelling counts (CC BY 4.0) |
-| People estimate | bedroom count = people | dwellings × 1.8 people/household (ABS 2021 Census) |
+| People estimate | bedroom count = people | dwellings × 1.45 residents/dwelling, calibrated on the ABS 2021 Census |
 | Selection | suburb name | **draw any polygon / rectangle / circle** + filters (area, year, floors, class, address) |
 | Analysis | popup per building | totals, vulnerability breakdown, priority list, **CSV export** |
 | Backend | Django + Folium (server-rendered map) | Django + **GeoDjango / PostGIS** + REST API (GeoJSON) |
@@ -94,14 +100,33 @@ Looking back at the 2023 version, a few things limited it:
 Both are joined on census year and property ID. See
 [`data/README.md`](data/README.md) for the full processing steps.
 
+The shipped dataset (`data/ris_buildings.csv`) uses the **2024 census year**:
+
+| | |
+| --- | --- |
+| Buildings | 14,093 (1 duplicate removed) |
+| Residential buildings | 10,483 |
+| Dwellings | 114,150, all matched to a building |
+| Estimated residents | ≈ 165,000 |
+| Construction year known | 7,608 buildings (54 %); 87 % of dwellings |
+| Tallest building | 101 floors |
+
+Construction year is missing mostly for single houses and terraces in the
+older inner suburbs (East Melbourne, South Yarra, North Melbourne, Carlton).
+Earlier CLUE census years could fill only about 100 of them, so they stay
+*Unknown* rather than being guessed.
+
 ### Estimating residents
 
-`estimated residents = dwellings × average household size`
+`estimated residents = dwellings × persons per dwelling`
 
-The default household size is **1.8 people**, the 2021 ABS Census average for
-the Melbourne City SA3. It is an average, so the estimate is reliable for
-areas and less so for a single building. Change it with the `HOUSEHOLD_SIZE`
-setting.
+The factor is **1.45**: 149,601 usual residents ÷ 103,029 private dwellings in
+the Melbourne City SA3 (ABS 2021 Census). We first used the average household
+size (1.8), but 27 % of the dwellings were unoccupied in 2021. Applying 1.8 to
+every dwelling gave ≈ 205,000 people, about 40 % more than the census count.
+The calibrated factor already includes vacancy. Because it is an average, the
+estimate is good for areas and rough for a single building. Change it with
+the `PERSONS_PER_DWELLING` setting.
 
 ### Vulnerability classes (screening only)
 
@@ -196,12 +221,16 @@ templates/, static/   Leaflet client (Leaflet + Leaflet.draw vendored for offlin
 data/                 processed dataset + how to rebuild it
 docker/, Dockerfile   container setup
 legacy/               the original 2023 Folium version
+docs/                 summary of the 2023 report
 ```
 
 ## Limitations and next steps
 
-* Residents are an estimate from dwelling counts and an average household
-  size. They are not a head count, and day/night occupancy is ignored.
+* Residents are an estimate from dwelling counts and one city-wide
+  persons-per-dwelling factor. They are not a head count. Day/night occupancy,
+  workers and visitors are ignored, and the 2021 factor reflects a census
+  taken during COVID-19 restrictions.
+* 46 % of buildings have no recorded construction year (mostly single houses).
 * The vulnerability class only uses construction year. Structural system,
   soil class and retrofits are not in the data.
 * Coverage is the City of Melbourne municipality only.
@@ -216,8 +245,9 @@ legacy/               the original 2023 Folium version
 * 2023 version: Mustafa Buğra Bekdemir and Alperen Mollaahmet, Hacettepe
   University GMT 458, supervised by Prof. Dr. Sultan Kocaman Gökçeoğlu.
 * 2026 rebuild: Mustafa Buğra Bekdemir.
-* Data: City of Melbourne Open Data Portal (CLUE), CC BY 4.0; household size
-  from the Australian Bureau of Statistics 2021 Census.
+* Data: City of Melbourne Open Data Portal (CLUE), CC BY 4.0; population and dwelling counts
+  for the persons-per-dwelling factor from the Australian Bureau of Statistics
+  2021 Census.
 * Code licence: MIT.
 
 ---
@@ -231,5 +261,5 @@ hakkında hızlı bilgi sağlamaktır. 2023 sürümünde açık veri bulamadığ
 Kaggle'daki Melbourne konut satış verisini kullanmış ve oda sayısını kişi
 sayısı kabul etmiştik. 2026 güncellemesinde proje, City of Melbourne'ın bina
 bazındaki açık CLUE verisiyle yeniden yazıldı. Artık haritada herhangi bir
-alan çizilerek o alandaki bina, konut ve tahmini kişi sayısı, yapım yılına
+alan çizilerek o alandaki bina, konut ve tahmini kişi sayısı (konut × 1,45, ABS 2021 ile kalibre), yapım yılına
 dayalı kırılganlık sınıfına göre özetleniyor ve CSV olarak indirilebiliyor.

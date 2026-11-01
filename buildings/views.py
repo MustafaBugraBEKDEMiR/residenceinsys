@@ -125,7 +125,7 @@ class MetaView(APIView):
             "floors_max": agg["floors_max"],
             "dwellings": agg["dwellings"] or 0,
             "est_residents": round(agg["residents"] or 0),
-            "household_size": settings.HOUSEHOLD_SIZE,
+            "persons_per_dwelling": settings.PERSONS_PER_DWELLING,
             "small_areas": [{"name": a["small_area"], "buildings": a["n"]} for a in areas],
             "risk_classes": risk.legend(),
             "source": {
@@ -235,7 +235,7 @@ class AreaStatsView(APIView):
             "by_small_area": by_area,
             "priority_buildings": priority,
             "ids": list(qs.values_list("id", flat=True)[:20000]),
-            "household_size": settings.HOUSEHOLD_SIZE,
+            "persons_per_dwelling": settings.PERSONS_PER_DWELLING,
         })
 
 
