@@ -9,6 +9,7 @@ JSON file. No database or Django runtime is needed:
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -71,12 +72,17 @@ def build() -> None:
 
     html = (ROOT / "templates" / "index.html").read_text(encoding="utf-8")
     html = html.replace("{% load static %}", "")
-    html = re.sub(r"\{% static '([^']+)' %\}", r"static/\1", html)
+    # cache-busting: GitHub Pages caches assets for 10 minutes
+    version = hashlib.sha1(b"".join(
+        f.read_bytes()
+        for f in [*sorted((ROOT / "static" / "ris").glob("*")), ROOT / "data" / "ris_buildings.csv"]
+    )).hexdigest()[:8]
+    html = re.sub(r"\{% static '([^']+)' %\}", rf"static/\1?v={version}", html)
     html = html.replace(
-        '<script src="static/ris/app.js"></script>',
-        '<script>window.RIS_DATA_URL = "data/ris.json";</script>\n'
-        '<script src="static/ris/static-backend.js"></script>\n'
-        '<script src="static/ris/app.js"></script>',
+        f'<script src="static/ris/app.js?v={version}"></script>',
+        f'<script>window.RIS_DATA_URL = "data/ris.json?v={version}";</script>\n'
+        f'<script src="static/ris/static-backend.js?v={version}"></script>\n'
+        f'<script src="static/ris/app.js?v={version}"></script>',
     )
     html = html.replace(
         '<p class="summary" id="dataset-summary">',
