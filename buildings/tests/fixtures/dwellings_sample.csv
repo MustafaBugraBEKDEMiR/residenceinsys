@@ -1,0 +1,7 @@
+census_year;block_id;property_id;base_property_id;building_address;clue_small_area;dwelling_type;dwelling_number;longitude;latitude;location
+2023;1;100;100;1 Test St MELBOURNE 3000;Melbourne (CBD);Residential Apartment;4;144.9631;-37.8136;-37.8136, 144.9631
+2023;1;101;100;3 Test St MELBOURNE 3000;Melbourne (CBD);Residential Apartment;40;144.9640;-37.8140;-37.8140, 144.9640
+2023;1;101;100;3 Test St MELBOURNE 3000;Melbourne (CBD);Student Apartment;10;144.9640;-37.8140;-37.8140, 144.9640
+2023;3;103;103;5 Lygon St CARLTON 3053;Carlton;House/Townhouse;1;144.9670;-37.8000;-37.8000, 144.9670
+2023;3;999;999;Unmatched;Carlton;House/Townhouse;2;144.9670;-37.8000;-37.8000, 144.9670
+2022;1;100;100;1 Test St MELBOURNE 3000;Melbourne (CBD);Residential Apartment;3;144.9631;-37.8136;-37.8136, 144.9631

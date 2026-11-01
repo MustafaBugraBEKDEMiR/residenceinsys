@@ -1,0 +1,9 @@
+Census year;Block ID;Property ID;Base property ID;Building name;Street address;CLUE small area;Construction year;Refurbished year;Number of floors (above ground);Predominant space use;Accessibility type;Longitude;Latitude;Location
+2023;1;100;100;Old Terrace;1 Test St MELBOURNE 3000;Melbourne (CBD);1890;;2;Residential Apartment;Not determined;144.9631;-37.8136;-37.8136, 144.9631
+2023;1;101;100;;3 Test St MELBOURNE 3000;Melbourne (CBD);1965;1990;8;Residential Apartment;High level of accessibility;144.9640;-37.8140;-37.8140, 144.9640
+2023;2;102;102;Office Tower;10 Test St MELBOURNE 3000;Melbourne (CBD);2005;;30;Office;High level of accessibility;144.9650;-37.8150;-37.8150, 144.9650
+2023;3;103;103;;5 Lygon St CARLTON 3053;Carlton;1985;;3;House/Townhouse;Not determined;;;-37.8000, 144.9670
+2023;3;104;104;;7 Lygon St CARLTON 3053;Carlton;0;;1;House/Townhouse;Not determined;144.9672;-37.8002;-37.8002, 144.9672
+2023;3;104;104;Duplicate;7 Lygon St CARLTON 3053;Carlton;1950;;1;House/Townhouse;Not determined;144.9672;-37.8002;-37.8002, 144.9672
+2023;9;105;105;Bad coords;Nowhere;Carlton;1950;;1;Office;Not determined;0;0;0, 0
+2022;1;100;100;Old Terrace;1 Test St MELBOURNE 3000;Melbourne (CBD);1890;;2;Residential Apartment;Not determined;144.9631;-37.8136;-37.8136, 144.9631

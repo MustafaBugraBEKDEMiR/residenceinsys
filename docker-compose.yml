@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_DB: ris
+      POSTGRES_USER: ris
+      POSTGRES_PASSWORD: ris
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ris -d ris"]
+      interval: 5s
+      retries: 10
+
+  web:
+    build: .
+    environment:
+      DATABASE_URL: postgis://ris:ris@db:5432/ris
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
+      DEBUG: ${DEBUG:-0}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
+      HOUSEHOLD_SIZE: ${HOUSEHOLD_SIZE:-1.8}
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

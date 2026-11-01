@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.env
+.venv/
+venv/
+*.sqlite3
+staticfiles/
+.pytest_cache/
+data/raw/
+.DS_Store
+Thumbs.db
+desktop.ini

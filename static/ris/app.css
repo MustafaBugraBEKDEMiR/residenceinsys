@@ -1,0 +1,55 @@
+:root {
+  --bg: #f6f7f9; --panel: #fff; --ink: #1f2a37; --muted: #6b7280; --line: #e5e7eb;
+  --accent: #1d4ed8; --accent-ink: #fff; --radius: 8px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; color: var(--ink); background: var(--bg); }
+.app { display: flex; height: 100vh; }
+.sidebar { width: 360px; flex: none; overflow-y: auto; background: var(--bg); border-right: 1px solid var(--line); padding: 14px; }
+#map { flex: 1; height: 100%; }
+.brand h1 { font-size: 1.2rem; margin: 0; }
+.tagline { margin: 2px 0 6px; color: var(--muted); font-size: .85rem; }
+.summary { margin: 0; font-size: .85rem; background: #eef2ff; border-radius: var(--radius); padding: 6px 8px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; margin-top: 12px; }
+.panel h2 { font-size: .95rem; margin: 0 0 8px; }
+.panel h3 { font-size: .82rem; margin: 12px 0 6px; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+.panel h3 small { text-transform: none; letter-spacing: 0; }
+label { display: block; font-size: .82rem; margin-bottom: 8px; color: var(--muted); }
+input[type=search], input[type=number], select { display: block; width: 100%; margin-top: 3px; padding: 6px 8px; font: inherit; color: var(--ink); border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+.row { display: flex; gap: 8px; } .row label { flex: 1; }
+fieldset { border: 0; padding: 0; margin: 0 0 8px; }
+legend { font-size: .82rem; color: var(--muted); margin-bottom: 4px; }
+.risk-boxes label, label.check { display: flex; align-items: center; gap: 6px; margin: 0 0 4px; color: var(--ink); }
+.swatch { width: 11px; height: 11px; border-radius: 50%; display: inline-block; flex: none; }
+.buttons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+button { font: inherit; font-size: .85rem; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--line); background: #fff; cursor: pointer; }
+button:hover { border-color: #9ca3af; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.hint { font-size: .8rem; color: var(--muted); margin: 6px 0 0; }
+.kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
+.kpi { background: var(--bg); border-radius: 6px; padding: 8px; }
+.kpi span { display: block; font-size: 1.25rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+.kpi small { color: var(--muted); font-size: .75rem; }
+.kpi.accent { background: #fef3c7; }
+.bar { display: grid; grid-template-columns: 70px 1fr 64px; align-items: center; gap: 6px; font-size: .78rem; margin-bottom: 4px; }
+.bar .track { background: var(--bg); border-radius: 3px; height: 10px; overflow: hidden; }
+.bar .fill { height: 100%; }
+.bar .val { text-align: right; font-variant-numeric: tabular-nums; }
+.priority { padding-left: 18px; margin: 0; font-size: .8rem; }
+.priority li { margin-bottom: 4px; cursor: pointer; }
+.priority li:hover { color: var(--accent); }
+.credits { font-size: .72rem; color: var(--muted); margin-top: 12px; line-height: 1.45; }
+.credits a { color: var(--accent); }
+.legend { background: #fff; padding: 8px 10px; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.2); font-size: .78rem; line-height: 1.6; }
+.legend div { display: flex; align-items: center; gap: 6px; }
+.popup table { border-collapse: collapse; font-size: .8rem; }
+.popup th { text-align: left; color: var(--muted); font-weight: 500; padding: 1px 8px 1px 0; vertical-align: top; }
+.popup h4 { margin: 0 0 4px; font-size: .9rem; }
+.badge { display: inline-block; padding: 1px 6px; border-radius: 10px; color: #fff; font-size: .72rem; }
+.toggle { display: none; }
+@media (max-width: 760px) {
+  .sidebar { position: absolute; z-index: 1000; top: 0; bottom: 0; left: 0; width: 88vw; transform: translateX(-100%); transition: transform .2s; }
+  .sidebar.open { transform: none; }
+  .toggle { display: block; position: absolute; z-index: 1001; top: 10px; left: 56px; }
+}

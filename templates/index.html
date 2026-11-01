@@ -1,0 +1,88 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resident Information System</title>
+  <link rel="stylesheet" href="{% static 'vendor/leaflet/leaflet.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/leaflet-draw/leaflet.draw.css' %}">
+  <link rel="stylesheet" href="{% static 'ris/app.css' %}">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <header class="brand">
+      <h1>Resident Information System</h1>
+      <p class="tagline">Building &amp; resident explorer for disaster response</p>
+      <p class="summary" id="dataset-summary">Loading dataset…</p>
+    </header>
+
+    <section class="panel">
+      <h2>Filter buildings</h2>
+      <form id="filters" autocomplete="off">
+        <label>Address or building name
+          <input type="search" name="q" placeholder="e.g. Swanston St">
+        </label>
+        <label>CLUE small area
+          <select name="small_area" id="small-area"><option value="">All areas</option></select>
+        </label>
+        <div class="row">
+          <label>Built from <input type="number" name="year_min" min="1800" max="2100" placeholder="1800"></label>
+          <label>to <input type="number" name="year_max" min="1800" max="2100" placeholder="2025"></label>
+        </div>
+        <label>Minimum floors <input type="number" name="floors_min" min="0" max="100" placeholder="0"></label>
+        <fieldset>
+          <legend>Vulnerability class</legend>
+          <div id="risk-boxes" class="risk-boxes"></div>
+        </fieldset>
+        <label class="check"><input type="checkbox" name="residential" value="1"> Residential buildings only</label>
+        <div class="buttons">
+          <button type="submit" class="primary">Apply</button>
+          <button type="button" id="reset">Reset</button>
+        </div>
+        <p class="hint" id="result-count"></p>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Affected area analysis</h2>
+      <p class="hint">Draw a polygon, rectangle or circle on the map to estimate how many buildings and residents are inside it.</p>
+      <div class="buttons">
+        <button type="button" id="draw-polygon">Polygon</button>
+        <button type="button" id="draw-rectangle">Rectangle</button>
+        <button type="button" id="draw-circle">Circle</button>
+      </div>
+      <div id="stats" class="stats" hidden>
+        <div class="kpis">
+          <div class="kpi"><span id="k-buildings">0</span><small>buildings</small></div>
+          <div class="kpi"><span id="k-res">0</span><small>residential</small></div>
+          <div class="kpi"><span id="k-dw">0</span><small>dwellings</small></div>
+          <div class="kpi accent"><span id="k-people">0</span><small>est. residents</small></div>
+        </div>
+        <p class="hint" id="stats-meta"></p>
+        <h3>By vulnerability class</h3>
+        <div id="risk-bars"></div>
+        <h3>Priority buildings <small>(pre-1980, most residents)</small></h3>
+        <ol id="priority" class="priority"></ol>
+        <div class="buttons">
+          <button type="button" id="export" class="primary">Export CSV</button>
+          <button type="button" id="clear-area">Clear area</button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="credits">
+      Data: City of Melbourne, <a href="https://data.melbourne.vic.gov.au/" target="_blank" rel="noopener">CLUE</a> (CC BY 4.0).
+      Residents are <em>estimated</em> as dwellings × <span id="hh">1.8</span> people per household (ABS 2021 Census).
+      Vulnerability classes are a screening aid by construction year, not an engineering assessment.
+      <br><a href="/api/meta/">API</a> · <a href="https://github.com/MustafaBugraBEKDEMiR/residenceinsys" target="_blank" rel="noopener">Source code</a>
+    </footer>
+  </aside>
+  <button class="toggle" id="toggle" aria-label="Toggle panel">☰</button>
+  <main id="map"></main>
+</div>
+<script src="{% static 'vendor/leaflet/leaflet.js' %}"></script>
+<script src="{% static 'vendor/leaflet-draw/leaflet.draw.js' %}"></script>
+<script src="{% static 'ris/app.js' %}"></script>
+</body>
+</html>
